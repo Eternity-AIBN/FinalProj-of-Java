@@ -6,4 +6,7 @@ public class Bullet {
     Bullet(int power){
         this.power = power;
     }
+    public int getPower(){
+        return this.power;
+    }
 }

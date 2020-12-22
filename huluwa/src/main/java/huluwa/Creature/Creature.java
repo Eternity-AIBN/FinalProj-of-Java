@@ -23,8 +23,23 @@ public class Creature{
     public String getName(){
         return this.name;
     }
-    public int getHP(){
+    public int getFullHP(){
+        return this.fullHP;
+    }
+    public int getCurHP(){
         return this.curHP;
+    }
+    public int getDefence(){
+        return this.defence;
+    }
+    public Bullet getBullet(){
+        return this.bullet;
+    }
+    public int getPosX(){
+        return this.posX;
+    }
+    public int getPosY(){
+        return this.posY;
     }
     public void setHP(int newHP){
         this.curHP = newHP;
