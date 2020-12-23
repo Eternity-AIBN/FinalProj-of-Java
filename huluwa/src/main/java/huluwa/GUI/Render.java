@@ -1,5 +1,6 @@
 package huluwa.GUI;
 
+import huluwa.Game;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -29,6 +30,9 @@ public class Render extends Application {
 			gc.strokeLine(50*i+21, 0+menuBarHeight, 50*i+21, 500+menuBarHeight);
 		for(int i = 0; i <= 10;i++)
 			gc.strokeLine(21, 50*i+menuBarHeight, 971, 50*i+menuBarHeight);
+
+        Game game = new Game();
+        game.init(root);
 
         primaryStage.setScene(new Scene(root));
         primaryStage.setResizable(false);

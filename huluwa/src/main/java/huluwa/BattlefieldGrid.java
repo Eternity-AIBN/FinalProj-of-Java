@@ -19,7 +19,7 @@ public class BattlefieldGrid {
     //private String name;  //这个格子上对应的生物的姓名
     private Creature creature;  //在这个格子上的生物体
     
-    BattlefieldGrid(Creature c) {
+    public BattlefieldGrid(Creature c) {
         creature = c;
         vbox = new VBox();
         button = new Button();
@@ -29,7 +29,7 @@ public class BattlefieldGrid {
         String fileName = "file:resource//" + creature.getName() + ".png";
         Image image = new Image(fileName);
         ImageView imageview = new ImageView(image);
-        imageview.setFitHeight(50);
+        imageview.setFitHeight(40);
         imageview.setFitWidth(50);
         button.setGraphic(imageview);
 
@@ -45,8 +45,8 @@ public class BattlefieldGrid {
             //TODO 移动、攻击，死亡了要干啥干啥
         });
 
-        button.setMinSize(50, 50);
-        button.setMaxSize(50, 50);
+        button.setMinSize(50, 40);
+        button.setMaxSize(50, 40);
         Tooltip tp = new Tooltip(); //添加工具提示控件
         tp.setText(
             "FullHP: " + creature.getFullHP() + 
@@ -60,13 +60,18 @@ public class BattlefieldGrid {
         hpBar.setProgress(creature.getCurHP()/creature.getFullHP());
         hpBar.setMinSize(50, 10);
         hpBar.setMaxSize(50, 10);
+        hpBar.setStyle("-fx-accent: green;");
 
-        vbox.setMinSize(50, 50);
-        vbox.setMaxSize(50, 50);
+        vbox.setMinSize(50, 40);
+        vbox.setMaxSize(50, 40);
         vbox.getChildren().addAll(button, hpBar);
 
         vbox.setLayoutX(21 + 50*(creature.getPosX() - 1));
         vbox.setLayoutY(29 + 50*(creature.getPosY() - 1));
+    }
+
+    public VBox getVBox(){
+        return this.vbox;
     }
 
     public void update(){  //一个生物体的状态发生改变时相应的更新其在战场上的表现（位置，血量等）

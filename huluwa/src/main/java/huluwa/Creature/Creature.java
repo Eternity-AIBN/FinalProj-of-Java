@@ -13,12 +13,15 @@ public class Creature{
     private int posX, posY;  //在场上坐标
     
 
-    Creature(String name, int fullHP, int defence, String bulletType){
+    Creature(String name, int fullHP, int defence, String bulletType, int posX, int posY){
         bulletFactory = new BulletFactory();
         this.name = name;
         this.fullHP = fullHP;
+        this.curHP = fullHP;
         this.defence = defence;
         this.bullet = bulletFactory.getShape(bulletType);
+        this.posX = posX;
+        this.posY = posY;
     }
     public String getName(){
         return this.name;

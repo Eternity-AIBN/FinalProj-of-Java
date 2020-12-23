@@ -1,7 +1,7 @@
 package huluwa.Creature;
 
 public class Snack extends Creature{
-    Snack(String name, int fullHP, int defence, String bulletType){
-        super(name, fullHP, defence, bulletType);
+    public Snack(String name, int fullHP, int defence, String bulletType, int posX, int posY){
+        super(name, fullHP, defence, bulletType, posX, posY);
     }
 }
