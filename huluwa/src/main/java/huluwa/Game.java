@@ -3,6 +3,7 @@ package huluwa;
 import java.util.ArrayList;
 import java.util.List;
 
+import huluwa.Bullet.Bullet;
 import huluwa.Creature.Creature;
 import huluwa.Creature.Grandpa;
 import huluwa.Creature.Hulu;
@@ -13,8 +14,8 @@ import huluwa.Creature.LittleSoldier;
 import javafx.scene.Group;
 
 public class Game {
-    List<Creature> goodMan, badMan;
-    List<BattlefieldGrid> goodManGrid, badManGrid; //good: 爷爷+穿山甲+七个葫芦娃, bad: 蛇精+蝎子精+十个小喽啰 
+    static List<Creature> goodMan, badMan;
+    static List<BattlefieldGrid> goodManGrid, badManGrid; //good: 爷爷+穿山甲+七个葫芦娃, bad: 蛇精+蝎子精+十个小喽啰 
 
     //BattlefieldGrid gpGrid,plGrid,hulu1Grid,hulu2Grid,hulu3Grid,hulu4Grid,hulu5Grid,hulu6Grid,hulu7Grid;
     //BattlefieldGrid snackGrid,scorpionGrid,ls1Grid,ls2Grid,ls3Grid,ls4Grid,ls5Grid,ls6Grid,ls7Grid,ls8Grid,ls9Grid,ls10Grid;
@@ -63,6 +64,42 @@ public class Game {
         for(int i=0; i<badManGrid.size(); ++i){
             root.getChildren().add(badManGrid.get(i).getVBox());
         }
+    }
+
+    public static void shoot(Creature c, Bullet b){  //(x,y)处的生物发射一个子弹, game模块负责找到命中目标并更新命中目标的情况，不负责绘图
+        int startX = c.getPosX();
+        int startY = c.getPosY();
+        int endX = -1, endY = -1;
+        boolean goodBad = c.getGoodOrBad();
+        //TODO暂时规定子弹只能直线发射
+        endY = startY;
+        if(goodBad){   //葫芦娃阵营发射子弹
+            endX = 21;
+            for(int xi = startX+1; xi<19; ++xi){
+                for(int i = 0; i<badMan.size();++i){
+                    if(badMan.get(i).getPosX() == xi && badMan.get(i).getPosY() == endY ){  //找到目标
+                        badMan.get(i).beAttacked(b);
+                        endX = xi;
+                        break;
+                    }
+                }
+                if(endX!=21)break;
+            }
+        }else{   //蛇精阵营发射子弹
+            endX = -1;
+            for(int xi = startX-1; xi>0; --xi){
+                for(int i = 0; i<goodMan.size();++i){
+                    if(goodMan.get(i).getPosX() == xi && goodMan.get(i).getPosY() == endY ){
+                        goodMan.get(i).beAttacked(b);
+                        endX = xi;
+                        break;
+                    }
+                }
+                if(endX!=-1)break;
+            }
+        }
+
+        Render.drawBullet(startX, startY, endX, endY);
     }
 
 }

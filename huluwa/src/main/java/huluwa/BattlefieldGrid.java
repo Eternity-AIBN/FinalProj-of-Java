@@ -50,7 +50,8 @@ public class BattlefieldGrid {
                 case W: creature.setPosY(creature.getPosY()-1); break;
                 case A: creature.setPosX(creature.getPosX()-1); break;
                 case D: creature.setPosX(creature.getPosX()+1); break;
-                case J: //攻击（发射子弹）
+                case J: Game.shoot(creature, creature.getBullet()); break; //攻击（发射子弹）
+                case K: Game.shoot(creature, creature.getBullet()); break;
             }
             update();
         });
@@ -87,13 +88,11 @@ public class BattlefieldGrid {
     public void update(){  //一个生物体的状态发生改变时相应的更新其在战场上的表现（位置，血量等）
         vbox.setLayoutX(21 + 50*(creature.getPosX() - 1));
         vbox.setLayoutY(29 + 50*(creature.getPosY() - 1));
+        updateHpBar();
     }
 
-    public void setHpBar(int hp) {
-        hpBar.setProgress((double) hp / creature.getFullHP());
+    public void updateHpBar() { 
+        hpBar.setProgress((double) creature.getCurHP() / creature.getFullHP());
     }
 
-    public void buttonAction(EventHandler<ActionEvent> e) {
-        button.setOnAction(e);
-    }
 }

@@ -11,9 +11,10 @@ public class Creature{
     private BulletFactory bulletFactory;
     private Bullet bullet;   //自己的子弹类型
     private int posX, posY;  //在场上坐标
-    
+    private boolean alive;   //是否还活着
+    private boolean goodOrBad;  //true表示好人，false表示坏人
 
-    Creature(String name, int fullHP, int defence, String bulletType, int posX, int posY){
+    Creature(String name, int fullHP, int defence, String bulletType, int posX, int posY, boolean flag){
         bulletFactory = new BulletFactory();
         this.name = name;
         this.fullHP = fullHP;
@@ -22,6 +23,8 @@ public class Creature{
         this.bullet = bulletFactory.getShape(bulletType);
         this.posX = posX;
         this.posY = posY;
+        this.alive = true;
+        this.goodOrBad = flag;
     }
     public String getName(){
         return this.name;
@@ -52,5 +55,15 @@ public class Creature{
     }
     public void setPosY(int posY){
         this.posY = posY;
+    }
+    public boolean getGoodOrBad(){
+        return this.goodOrBad;
+    }
+
+    public void beAttacked(Bullet b){ //受到攻击
+        this.curHP -= (b.getPower()-this.defence);
+        if(this.curHP <= 0){
+            alive = false;
+        }
     }
 }
