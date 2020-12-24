@@ -2,6 +2,7 @@ package huluwa;
 
 import huluwa.Creature.Creature;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tooltip;
@@ -41,8 +42,17 @@ public class BattlefieldGrid {
             button.setEffect(null);
         });
 
-        button.setOnAction((ActionEvent e) -> {
-            //TODO 移动、攻击，死亡了要干啥干啥
+        button.setOnKeyReleased(e -> {
+            //移动、攻击，死亡了要干啥干啥
+            //TODO不能移出战场，不可移动到有生物的格子
+            switch (e.getCode()) {
+                case S: creature.setPosY(creature.getPosY()+1); break;
+                case W: creature.setPosY(creature.getPosY()-1); break;
+                case A: creature.setPosX(creature.getPosX()-1); break;
+                case D: creature.setPosX(creature.getPosX()+1); break;
+                case J: //攻击（发射子弹）
+            }
+            update();
         });
 
         button.setMinSize(50, 40);
@@ -75,6 +85,15 @@ public class BattlefieldGrid {
     }
 
     public void update(){  //一个生物体的状态发生改变时相应的更新其在战场上的表现（位置，血量等）
+        vbox.setLayoutX(21 + 50*(creature.getPosX() - 1));
+        vbox.setLayoutY(29 + 50*(creature.getPosY() - 1));
+    }
 
+    public void setHpBar(int hp) {
+        hpBar.setProgress((double) hp / creature.getFullHP());
+    }
+
+    public void buttonAction(EventHandler<ActionEvent> e) {
+        button.setOnAction(e);
     }
 }

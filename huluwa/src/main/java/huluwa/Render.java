@@ -1,4 +1,4 @@
-package huluwa.GUI;
+package huluwa;
 
 import huluwa.Game;
 import javafx.application.Application;
