@@ -70,15 +70,16 @@ public class Game {
         int startX = c.getPosX();
         int startY = c.getPosY();
         int endX = -1, endY = -1;
-        boolean goodBad = c.getGoodOrBad();
-        //TODO暂时规定子弹只能直线发射
+        //规定子弹只能直线发射
         endY = startY;
-        if(goodBad){   //葫芦娃阵营发射子弹
+
+        int tmp = 0;
+        if(c.getGoodOrBad()){   //葫芦娃阵营发射子弹
             endX = 21;
             for(int xi = startX+1; xi<19; ++xi){
                 for(int i = 0; i<badMan.size();++i){
                     if(badMan.get(i).getPosX() == xi && badMan.get(i).getPosY() == endY ){  //找到目标
-                        badMan.get(i).beAttacked(b);
+                        tmp = i;
                         endX = xi;
                         break;
                     }
@@ -90,7 +91,7 @@ public class Game {
             for(int xi = startX-1; xi>0; --xi){
                 for(int i = 0; i<goodMan.size();++i){
                     if(goodMan.get(i).getPosX() == xi && goodMan.get(i).getPosY() == endY ){
-                        goodMan.get(i).beAttacked(b);
+                        tmp = i;
                         endX = xi;
                         break;
                     }
@@ -99,7 +100,17 @@ public class Game {
             }
         }
 
-        Render.drawBullet(startX, startY, endX, endY);
+        Render.drawBullet(c,b,tmp,startX, startY, endX, endY);
+    }
+
+    public static void updateHp(Creature c, Bullet b, int tmp){
+        if(c.getGoodOrBad()){
+            badMan.get(tmp).beAttacked(b);
+            badManGrid.get(tmp).updateHpBarAndTips();
+        }else{
+            goodMan.get(tmp).beAttacked(b);
+            goodManGrid.get(tmp).updateHpBarAndTips();
+        }
     }
 
 }

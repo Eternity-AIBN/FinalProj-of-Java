@@ -3,6 +3,8 @@ package huluwa;
 import org.w3c.dom.css.RGBColor;
 
 import huluwa.Game;
+import huluwa.Bullet.Bullet;
+import huluwa.Creature.Creature;
 import javafx.animation.AnimationTimer;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -21,7 +23,7 @@ import javafx.util.Duration;
 
 public class Render extends Application {
     static Group root;
-    //variable for storing actual frame
+    // variable for storing actual frame
 
     @Override
     public void start(Stage primaryStage) {
@@ -55,7 +57,7 @@ public class Render extends Application {
         launch(args);
     }
 
-    public static void drawBullet(int startX, int startY, int endX, int endY) { // 给定起点(发射子弹的生物)和终点(子弹命中目标)(的战场坐标)，绘制子弹运动
+    public static void drawBullet(Creature c, Bullet b, int tmp, int startX, int startY, int endX, int endY) { // 给定起点(发射子弹的生物)和终点(子弹命中目标)(的战场坐标)，绘制子弹运动
         Circle bullet = new Circle(5, Color.rgb(148, 0, 211));
         bullet.setCenterX(50 * startX - 4);
         bullet.setCenterY(50 * startY + 4);
@@ -64,12 +66,12 @@ public class Render extends Application {
         double flyTime = Math.abs(endX - startX - 1) * 200; // 假定子弹飞行一格需要200ms
 
         Timeline timeline = new Timeline();
-        KeyValue xValue  = new KeyValue(bullet.centerXProperty(), 50*endX - 4); 
-        KeyValue yValue  = new KeyValue(bullet.centerYProperty(), 50*endY + 4);
-        KeyFrame keyFrame  = new KeyFrame(Duration.millis(flyTime), xValue, yValue);
+        KeyValue xValue = new KeyValue(bullet.centerXProperty(), 50 * endX - 4);
+        KeyValue yValue = new KeyValue(bullet.centerYProperty(), 50 * endY + 4);
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(flyTime), xValue, yValue);
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
-        timeline.setOnFinished(event -> bullet.setCenterX(1000));
-        
+        timeline.setOnFinished(event -> {bullet.setCenterX(1000); Game.updateHp(c, b, tmp);});
+
     }
 }

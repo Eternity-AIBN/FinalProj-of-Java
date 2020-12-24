@@ -88,11 +88,18 @@ public class BattlefieldGrid {
     public void update(){  //一个生物体的状态发生改变时相应的更新其在战场上的表现（位置，血量等）
         vbox.setLayoutX(21 + 50*(creature.getPosX() - 1));
         vbox.setLayoutY(29 + 50*(creature.getPosY() - 1));
-        updateHpBar();
     }
 
-    public void updateHpBar() { 
+    public void updateHpBarAndTips() { 
         hpBar.setProgress((double) creature.getCurHP() / creature.getFullHP());
+        Tooltip tp = new Tooltip(); //添加工具提示控件
+        tp.setText(
+            "FullHP: " + creature.getFullHP() + 
+            "\nCurrentHP: " + creature.getCurHP() + 
+            "\nDefence: "  + creature.getDefence() + 
+            "\nBullet: " + creature.getBullet().getPower() 
+        );
+        button.setTooltip(tp);
     }
 
 }
