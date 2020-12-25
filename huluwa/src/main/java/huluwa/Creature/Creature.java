@@ -59,11 +59,14 @@ public class Creature{
     public boolean getGoodOrBad(){
         return this.goodOrBad;
     }
+    public boolean isAlive(){
+        return this.alive;
+    }
 
     public void beAttacked(Bullet b){ //受到攻击
         this.curHP -= (b.getPower()-this.defence);
         if(this.curHP <= 0){
-            alive = false;
+            this.alive = false;
         }
     }
 }

@@ -1,8 +1,6 @@
 package huluwa;
 
 import huluwa.Creature.Creature;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tooltip;
@@ -71,14 +69,14 @@ public class BattlefieldGrid {
         hpBar.setProgress(creature.getCurHP()/creature.getFullHP());
         hpBar.setMinSize(50, 10);
         hpBar.setMaxSize(50, 10);
-        hpBar.setStyle("-fx-accent: green;");
+        hpBar.setStyle("-fx-accent: red;");
 
         vbox.setMinSize(50, 40);
         vbox.setMaxSize(50, 40);
         vbox.getChildren().addAll(button, hpBar);
 
         vbox.setLayoutX(21 + 50*(creature.getPosX() - 1));
-        vbox.setLayoutY(29 + 50*(creature.getPosY() - 1));
+        vbox.setLayoutY(39 + 50*(creature.getPosY() - 1));
     }
 
     public VBox getVBox(){
@@ -87,7 +85,7 @@ public class BattlefieldGrid {
 
     public void update(){  //一个生物体的状态发生改变时相应的更新其在战场上的表现（位置，血量等）
         vbox.setLayoutX(21 + 50*(creature.getPosX() - 1));
-        vbox.setLayoutY(29 + 50*(creature.getPosY() - 1));
+        vbox.setLayoutY(39 + 50*(creature.getPosY() - 1));
     }
 
     public void updateHpBarAndTips() { 

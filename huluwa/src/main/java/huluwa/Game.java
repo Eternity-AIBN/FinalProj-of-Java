@@ -73,7 +73,7 @@ public class Game {
         //规定子弹只能直线发射
         endY = startY;
 
-        int tmp = 0;
+        int tmp = -1;
         if(c.getGoodOrBad()){   //葫芦娃阵营发射子弹
             endX = 21;
             for(int xi = startX+1; xi<19; ++xi){
@@ -104,13 +104,36 @@ public class Game {
     }
 
     public static void updateHp(Creature c, Bullet b, int tmp){
+        if(tmp == -1){  //没有命中目标
+            return;
+        }
         if(c.getGoodOrBad()){
             badMan.get(tmp).beAttacked(b);
             badManGrid.get(tmp).updateHpBarAndTips();
+            if(!badMan.get(tmp).isAlive()){    //若死亡，将其删去
+                Render.removeDead(badManGrid.get(tmp));
+                badMan.remove(badMan.get(tmp));
+                badManGrid.remove(badManGrid.get(tmp));
+            }
         }else{
             goodMan.get(tmp).beAttacked(b);
             goodManGrid.get(tmp).updateHpBarAndTips();
+            if(!goodMan.get(tmp).isAlive()){
+                Render.removeDead(goodManGrid.get(tmp));
+                goodMan.remove(goodMan.get(tmp));
+                goodManGrid.remove(goodManGrid.get(tmp));
+            }
         }
+        Render.gameIsOver();
+    }
+
+    public static int gameOver(){  //判断游戏是否结束，1表示葫芦娃获胜，-1表示蛇精获胜，0表示未结束
+        if(goodMan.size()==0){ 
+            return -1;
+        }else if(badMan.size()==0){
+            return 1;
+        }
+        return 0;
     }
 
 }
