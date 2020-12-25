@@ -17,6 +17,7 @@ public class BattlefieldGrid {
     private ProgressBar hpBar;  //进度条控件，显示生物当前血量情况
     //private String name;  //这个格子上对应的生物的姓名
     private Creature creature;  //在这个格子上的生物体
+    enum Dir{UP, DOWN, LEFT, RIGHT}
     
     public BattlefieldGrid(Creature c) {
         creature = c;
@@ -44,10 +45,10 @@ public class BattlefieldGrid {
             //移动、攻击，死亡了要干啥干啥
             //TODO不能移出战场，不可移动到有生物的格子
             switch (e.getCode()) {
-                case S: creature.setPosY(creature.getPosY()+1); break;
-                case W: creature.setPosY(creature.getPosY()-1); break;
-                case A: creature.setPosX(creature.getPosX()-1); break;
-                case D: creature.setPosX(creature.getPosX()+1); break;
+                case S: move(Dir.DOWN); break;
+                case W: move(Dir.UP); break;
+                case A: move(Dir.LEFT); break;
+                case D: move(Dir.RIGHT); break;
                 case J: Game.shoot(creature, creature.getBullet()); break; //攻击（发射子弹）
                 case K: Game.shoot(creature, creature.getBullet()); break;
             }
@@ -98,6 +99,35 @@ public class BattlefieldGrid {
             "\nBullet: " + creature.getBullet().getPower() 
         );
         button.setTooltip(tp);
+    }
+
+    public void move(Dir dir){
+        switch(dir){
+            case DOWN: {
+                if(creature.getPosY()<10 && !Game.existCreature(creature.getPosX(), creature.getPosY()+1)){
+                    creature.setPosY(creature.getPosY()+1);
+                }
+                break;
+            }
+            case UP: {
+                if(creature.getPosY()>1 && !Game.existCreature(creature.getPosX(), creature.getPosY()-1)){
+                    creature.setPosY(creature.getPosY()-1);
+                }
+                break;
+            }
+            case LEFT: {
+                if(creature.getPosX()>1 && !Game.existCreature(creature.getPosX()-1, creature.getPosY())){
+                    creature.setPosX(creature.getPosX()-1);
+                }
+                break;
+            }
+            case RIGHT: {
+                if(creature.getPosX()<19 && !Game.existCreature(creature.getPosX()+1, creature.getPosY())){
+                    creature.setPosX(creature.getPosX()+1);
+                }
+                break;
+            }
+        }
     }
 
 }

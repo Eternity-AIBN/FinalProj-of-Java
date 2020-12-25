@@ -97,7 +97,7 @@ public class Render extends Application {
         bullet.setCenterY(50 * startY + 14);
         root.getChildren().add(bullet);
 
-        double flyTime = Math.abs(endX - startX - 1) * 200; // 假定子弹飞行一格需要200ms
+        double flyTime = Math.abs(endX - startX) * 200; // 假定子弹飞行一格需要200ms
 
         Timeline timeline = new Timeline();
         KeyValue xValue = new KeyValue(bullet.centerXProperty(), 50 * endX - 4);

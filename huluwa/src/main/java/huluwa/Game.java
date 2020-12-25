@@ -75,8 +75,8 @@ public class Game {
 
         int tmp = -1;
         if(c.getGoodOrBad()){   //葫芦娃阵营发射子弹
-            endX = 21;
-            for(int xi = startX+1; xi<19; ++xi){
+            endX = 20;
+            for(int xi = startX+1; xi<=19; ++xi){
                 for(int i = 0; i<badMan.size();++i){
                     if(badMan.get(i).getPosX() == xi && badMan.get(i).getPosY() == endY ){  //找到目标
                         tmp = i;
@@ -84,10 +84,10 @@ public class Game {
                         break;
                     }
                 }
-                if(endX!=21)break;
+                if(endX!=20)break;
             }
         }else{   //蛇精阵营发射子弹
-            endX = -1;
+            endX = 0;
             for(int xi = startX-1; xi>0; --xi){
                 for(int i = 0; i<goodMan.size();++i){
                     if(goodMan.get(i).getPosX() == xi && goodMan.get(i).getPosY() == endY ){
@@ -96,7 +96,7 @@ public class Game {
                         break;
                     }
                 }
-                if(endX!=-1)break;
+                if(endX!=0)break;
             }
         }
 
@@ -134,6 +134,20 @@ public class Game {
             return 1;
         }
         return 0;
+    }
+
+    public static boolean existCreature(int x, int y){  //给定坐标(x,y)，判断上面是否存在生物
+        for(int i=0; i<goodMan.size(); ++i){
+            if(goodMan.get(i).getPosX()==x && goodMan.get(i).getPosY()==y){
+                return true;
+            }
+        }
+        for(int i=0; i<badMan.size(); ++i){
+            if(badMan.get(i).getPosX()==x && badMan.get(i).getPosY()==y){
+                return true;
+            }
+        }
+        return false;
     }
 
 }
