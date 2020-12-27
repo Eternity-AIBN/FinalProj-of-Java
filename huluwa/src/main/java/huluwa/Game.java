@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import huluwa.Bullet.Bullet;
+import huluwa.Client.PlayerClient;
 import huluwa.Creature.Creature;
 import huluwa.Creature.Grandpa;
 import huluwa.Creature.Hulu;
@@ -14,14 +15,16 @@ import huluwa.Creature.LittleSoldier;
 import javafx.scene.Group;
 
 public class Game {
-    static List<Creature> goodMan, badMan;
-    static List<BattlefieldGrid> goodManGrid, badManGrid; //good: 爷爷+穿山甲+七个葫芦娃, bad: 蛇精+蝎子精+十个小喽啰 
+    List<Creature> goodMan, badMan;
+    public List<BattlefieldGrid> goodManGrid, badManGrid; //good: 爷爷+穿山甲+七个葫芦娃, bad: 蛇精+蝎子精+十个小喽啰 
     private boolean good;
+    static List<Creature> staticGoodMan, staticBadMan;
+    public static List<BattlefieldGrid> staticGoodManGrid, staticBadManGrid;
+    private PlayerClient pc;
 
-    //BattlefieldGrid gpGrid,plGrid,hulu1Grid,hulu2Grid,hulu3Grid,hulu4Grid,hulu5Grid,hulu6Grid,hulu7Grid;
-    //BattlefieldGrid snackGrid,scorpionGrid,ls1Grid,ls2Grid,ls3Grid,ls4Grid,ls5Grid,ls6Grid,ls7Grid,ls8Grid,ls9Grid,ls10Grid;
-
-    public Game(boolean good){
+    
+    public Game(boolean good, PlayerClient pc){
+        this.pc = pc;
         this.good = good;
         goodMan = new ArrayList<Creature>();
         badMan = new ArrayList<Creature>();
@@ -54,10 +57,10 @@ public class Game {
         badMan.add(new LittleSoldier("littleSoldier10", 10, 2, "One", 15, 10));
 
         for(int i=0; i<goodMan.size(); ++i){
-            goodManGrid.add(new BattlefieldGrid(goodMan.get(i)));
+            goodManGrid.add(new BattlefieldGrid(goodMan.get(i), pc));
         }
         for(int i=0; i<badMan.size(); ++i){
-            badManGrid.add(new BattlefieldGrid(badMan.get(i)));
+            badManGrid.add(new BattlefieldGrid(badMan.get(i), pc));
         }
 
         for(int i=0; i<goodManGrid.size(); ++i){
@@ -66,9 +69,14 @@ public class Game {
         for(int i=0; i<badManGrid.size(); ++i){
             root.getChildren().add(badManGrid.get(i).getVBox());
         }
+
+        staticGoodMan = new ArrayList<Creature>(goodMan);
+        staticBadMan = new ArrayList<Creature>(badMan);
+        staticGoodManGrid = new ArrayList<BattlefieldGrid>(goodManGrid);
+        staticBadManGrid = new ArrayList<BattlefieldGrid>(badManGrid);
     }
 
-    public static void shoot(Creature c, Bullet b){  //(x,y)处的生物发射一个子弹, game模块负责找到命中目标并更新命中目标的情况，不负责绘图
+    public static List<Integer> shoot(Creature c, Bullet b){  //(x,y)处的生物发射一个子弹, game模块负责找到命中目标并更新命中目标的情况，不负责绘图
         int startX = c.getPosX();
         int startY = c.getPosY();
         int endX = -1, endY = -1;
@@ -79,8 +87,8 @@ public class Game {
         if(c.getGoodOrBad()){   //葫芦娃阵营发射子弹
             endX = 20;
             for(int xi = startX+1; xi<=19; ++xi){
-                for(int i = 0; i<badMan.size();++i){
-                    if(badMan.get(i).getPosX() == xi && badMan.get(i).getPosY() == endY ){  //找到目标
+                for(int i = 0; i<staticBadMan.size();++i){
+                    if(staticBadMan.get(i).getPosX() == xi && staticBadMan.get(i).getPosY() == endY ){  //找到目标
                         tmp = i;
                         endX = xi;
                         break;
@@ -91,8 +99,8 @@ public class Game {
         }else{   //蛇精阵营发射子弹
             endX = 0;
             for(int xi = startX-1; xi>0; --xi){
-                for(int i = 0; i<goodMan.size();++i){
-                    if(goodMan.get(i).getPosX() == xi && goodMan.get(i).getPosY() == endY ){
+                for(int i = 0; i<staticGoodMan.size();++i){
+                    if(staticGoodMan.get(i).getPosX() == xi && staticGoodMan.get(i).getPosY() == endY ){
                         tmp = i;
                         endX = xi;
                         break;
@@ -102,34 +110,48 @@ public class Game {
             }
         }
 
-        Render.drawBullet(c,b,tmp,startX, startY, endX, endY);
+        List<Integer> res = new ArrayList<Integer>();
+        res.add(tmp);
+        res.add(startX);
+        res.add(startY);
+        res.add(endX);
+        res.add(endY);
+        return res;
+        //Render.drawBullet(c,b,tmp,startX, startY, endX, endY);  
     }
 
-    public static void updateHp(Creature c, Bullet b, int tmp){
+    public boolean updateHp(Creature c, Bullet b, int tmp){
         if(tmp == -1){  //没有命中目标
-            return;
+            return false;
         }
         if(c.getGoodOrBad()){
             badMan.get(tmp).beAttacked(b);
             badManGrid.get(tmp).updateHpBarAndTips();
             if(!badMan.get(tmp).isAlive()){    //若死亡，将其删去
-                Render.removeDead(badManGrid.get(tmp));
+                //Render.removeDead(badManGrid.get(tmp));
                 badMan.remove(badMan.get(tmp));
                 badManGrid.remove(badManGrid.get(tmp));
+                staticBadMan.remove(staticBadMan.get(tmp));
+                staticBadManGrid.remove(staticBadManGrid.get(tmp));
+                return true;
             }
         }else{
             goodMan.get(tmp).beAttacked(b);
             goodManGrid.get(tmp).updateHpBarAndTips();
             if(!goodMan.get(tmp).isAlive()){
-                Render.removeDead(goodManGrid.get(tmp));
+                //Render.removeDead(goodManGrid.get(tmp));
                 goodMan.remove(goodMan.get(tmp));
                 goodManGrid.remove(goodManGrid.get(tmp));
+                staticGoodMan.remove(staticGoodMan.get(tmp));
+                staticGoodManGrid.remove(staticGoodManGrid.get(tmp));
+                return true;
             }
         }
-        Render.gameIsOver();
+        return false;
+        //Render.gameIsOver();
     }
 
-    public static int gameOver(){  //判断游戏是否结束，1表示葫芦娃获胜，-1表示蛇精获胜，0表示未结束
+    public int gameOver(){  //判断游戏是否结束，1表示葫芦娃获胜，-1表示蛇精获胜，0表示未结束
         if(goodMan.size()==0){ 
             return -1;
         }else if(badMan.size()==0){
@@ -139,13 +161,13 @@ public class Game {
     }
 
     public static boolean existCreature(int x, int y){  //给定坐标(x,y)，判断上面是否存在生物
-        for(int i=0; i<goodMan.size(); ++i){
-            if(goodMan.get(i).getPosX()==x && goodMan.get(i).getPosY()==y){
+        for(int i=0; i<staticGoodMan.size(); ++i){
+            if(staticGoodMan.get(i).getPosX()==x && staticGoodMan.get(i).getPosY()==y){
                 return true;
             }
         }
-        for(int i=0; i<badMan.size(); ++i){
-            if(badMan.get(i).getPosX()==x && badMan.get(i).getPosY()==y){
+        for(int i=0; i<staticBadMan.size(); ++i){
+            if(staticBadMan.get(i).getPosX()==x && staticBadMan.get(i).getPosY()==y){
                 return true;
             }
         }

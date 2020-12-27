@@ -7,6 +7,7 @@ import java.util.List;
 
 import huluwa.Game;
 import huluwa.Render;
+import javafx.application.Application;
 
 public class PlayerClient {
     private NetClient nc = new NetClient(this);
@@ -15,11 +16,13 @@ public class PlayerClient {
     private Game game;
     private Render render;
 
-    public static void main(String[] args) {
+    public void main(String[] args) {
         PlayerClient pc = new PlayerClient();
-        pc.startTheThread();    //自己启动一个线程
-        pc.connectToServer();   //连接服务器
-        game = new Game(goodOrBad);
+        pc.startTheThread(); // 自己启动一个线程
+        pc.connectToServer(); // 连接服务器
+        this.game = new Game(goodOrBad, pc);
+        this.render = new Render(this.game);
+        Application.launch(render.getClass());
     }
     
     private void startTheThread(){
@@ -52,6 +55,18 @@ public class PlayerClient {
         this.goodOrBad = flag;
     }
 
+    public Render getRender(){
+        return this.render;
+    }
+
+    public NetClient getNC(){
+        return this.nc;
+    }
+
+    public Game getGame(){
+        return this.game;
+    }
+    
     public void gameOver(){
         
     }

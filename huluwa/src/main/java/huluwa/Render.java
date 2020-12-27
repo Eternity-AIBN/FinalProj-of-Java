@@ -26,9 +26,13 @@ import javafx.util.Duration;
 import javafx.geometry.Pos;
 
 public class Render extends Application {
-    static Group root;
-    static Label label;
+    Group root;
+    Label label;
+    private Game game;
     // variable for storing actual frame
+    public Render(Game game){
+        this.game = game;
+    }
 
     @Override
     public void start(Stage primaryStage) {
@@ -72,7 +76,7 @@ public class Render extends Application {
         MenuItem replayMenuItem = new MenuItem("Replay");
         MenuItem exitMenuItem = new MenuItem("Exit");
         fileMenu.getItems().addAll(startMenuItem, replayMenuItem, exitMenuItem);
-        startMenuItem.setOnAction(actionEvent -> {Game game = new Game(); game.init(root); label.setText("");});
+        startMenuItem.setOnAction(actionEvent -> {game.init(root); label.setText("");});
         replayMenuItem.setOnAction(actionEvent -> Platform.exit());
         exitMenuItem.setOnAction(actionEvent -> Platform.exit());
 
@@ -88,7 +92,7 @@ public class Render extends Application {
         launch(args);
     }
 
-    public static void drawBullet(Creature c, Bullet b, int tmp, int startX, int startY, int endX, int endY) { // 给定起点(发射子弹的生物)和终点(子弹命中目标)(的战场坐标)，绘制子弹运动
+    public void drawBullet(Creature c, Bullet b, int tmp, int startX, int startY, int endX, int endY) { // 给定起点(发射子弹的生物)和终点(子弹命中目标)(的战场坐标)，绘制子弹运动
         Circle bullet = new Circle(5, Color.rgb(148, 0, 211));
         bullet.setCenterX(50 * startX - 4);
         bullet.setCenterY(50 * startY + 14);
@@ -102,15 +106,26 @@ public class Render extends Application {
         KeyFrame keyFrame = new KeyFrame(Duration.millis(flyTime), xValue, yValue);
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
-        timeline.setOnFinished(event -> {bullet.setCenterX(1000); Game.updateHp(c, b, tmp);});
+        timeline.setOnFinished(event -> {
+            bullet.setCenterX(1000); 
+            boolean dead = game.updateHp(c, b, tmp);
+            if(dead){
+                if(c.getGoodOrBad()){
+                    removeDead(game.badManGrid.get(tmp));
+                }else{
+                    removeDead(game.goodManGrid.get(tmp));
+                }
+            }
+            gameIsOver();
+        });
 
     }
 
-    public static void removeDead(BattlefieldGrid deadOne){
+    public void removeDead(BattlefieldGrid deadOne){
         root.getChildren().remove(deadOne.getVBox());
     }
-    public static void gameIsOver(){
-        int flag = Game.gameOver();
+    public void gameIsOver(){
+        int flag = game.gameOver();
         if(flag==1){  //葫芦娃获胜
             label.setText("葫芦娃获胜！！！");
         }else if(flag==-1){  //蛇精获胜

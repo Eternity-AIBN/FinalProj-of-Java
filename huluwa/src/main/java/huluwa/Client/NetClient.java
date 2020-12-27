@@ -122,23 +122,23 @@ public class NetClient {
             Msg msg = null;
             switch (msgType){//根据消息的类型调用对应消息的解析方法
                 case Msg.PLAYER_JOIN_MSG :
-                    msg = new JoinMsg();
+                    msg = new JoinMsg(pc);
                     msg.parse(dis);
                     break;
                 case  Msg.MOVE_MSG :
-                    msg = new MoveMsg();
+                    msg = new MoveMsg(pc);
                     msg.parse(dis);
                     break;
                 case Msg.SHOOT_MSG:
-                    msg = new ShootMsg();
+                    msg = new ShootMsg(pc);
                     msg.parse(dis);
                     break;
                 case Msg.DEAD_MSG:
-                    msg = new DeadMsg();
+                    msg = new DeadMsg(pc);
                     msg.parse(dis);
                     break;
                 case Msg.GAME_OVER_MSG:
-                    msg = new GameOverMsg();
+                    msg = new GameOverMsg(pc);
                     msg.parse(dis);
                     break;
             }
