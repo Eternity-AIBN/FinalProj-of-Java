@@ -16,11 +16,13 @@ import javafx.scene.Group;
 public class Game {
     static List<Creature> goodMan, badMan;
     static List<BattlefieldGrid> goodManGrid, badManGrid; //good: 爷爷+穿山甲+七个葫芦娃, bad: 蛇精+蝎子精+十个小喽啰 
+    private boolean good;
 
     //BattlefieldGrid gpGrid,plGrid,hulu1Grid,hulu2Grid,hulu3Grid,hulu4Grid,hulu5Grid,hulu6Grid,hulu7Grid;
     //BattlefieldGrid snackGrid,scorpionGrid,ls1Grid,ls2Grid,ls3Grid,ls4Grid,ls5Grid,ls6Grid,ls7Grid,ls8Grid,ls9Grid,ls10Grid;
 
-    public Game(){
+    public Game(boolean good){
+        this.good = good;
         goodMan = new ArrayList<Creature>();
         badMan = new ArrayList<Creature>();
         goodManGrid = new ArrayList<BattlefieldGrid>();

@@ -1,13 +1,13 @@
 package huluwa.Bullet;
 
-import java.util.ArrayList;
-import java.util.List;
+//import java.util.ArrayList;
+//import java.util.List;
 
 public class BulletList {
-    private List<Bullet> bullets;
+    //private List<Bullet> bullets;
 
     BulletList(){
-        bullets = new ArrayList<Bullet>();
+        //bullets = new ArrayList<Bullet>();
     }
 
     public void move(){

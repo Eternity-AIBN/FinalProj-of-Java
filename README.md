@@ -5,3 +5,7 @@
 
 
 由于hpBar较小，当HP值为1时不明显（看起来像0），可通过查看tooltips确定。
+
+
+
+运行：`mvn clean javafx:run`

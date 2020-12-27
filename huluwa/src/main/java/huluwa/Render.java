@@ -1,6 +1,5 @@
 package huluwa;
 
-import huluwa.Game;
 import huluwa.Bullet.Bullet;
 import huluwa.Creature.Creature;
 
@@ -18,15 +17,12 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 
 public class Render extends Application {
@@ -36,6 +32,7 @@ public class Render extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        System.out.println(ClassLoader.getSystemResource(""));
         primaryStage.setTitle("HuLu Battle");
         root = new Group();
 
