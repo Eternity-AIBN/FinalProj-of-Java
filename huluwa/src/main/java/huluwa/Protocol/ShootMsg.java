@@ -4,7 +4,6 @@ import java.io.DataInputStream;
 import java.net.DatagramSocket;
 
 public class ShootMsg implements Msg{
-
     
 
     public void send(DatagramSocket ds, String IP, int UDP_Port){

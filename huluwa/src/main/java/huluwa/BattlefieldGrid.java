@@ -1,5 +1,6 @@
 package huluwa;
 
+import java.io.IOException;
 import java.util.List;
 
 import huluwa.Client.PlayerClient;
@@ -49,32 +50,37 @@ public class BattlefieldGrid {
 
         button.setOnKeyReleased(e -> {
             //移动、攻击，死亡了要干啥干啥
-            //TODO不能移出战场，不可移动到有生物的格子
             switch (e.getCode()) {
                 case W: {
-                    move(1); 
+                    moveWithRecord(1); 
                     MoveMsg msg = new MoveMsg(pc, c, 1, c.getGoodOrBad());
                     pc.getNC().send(msg);
                     break;
                 }
                 case S: {
-                    move(2); 
+                    moveWithRecord(2); 
                     MoveMsg msg = new MoveMsg(pc, c, 2, c.getGoodOrBad());
                     pc.getNC().send(msg);break;
                 }
                 case A: {
-                    move(3); 
+                    moveWithRecord(3); 
                     MoveMsg msg = new MoveMsg(pc, c, 3, c.getGoodOrBad());
                     pc.getNC().send(msg);
                     break;
                 }
                 case D: {
-                    move(4);
+                    moveWithRecord(4);
                     MoveMsg msg = new MoveMsg(pc, c, 4, c.getGoodOrBad());
                     pc.getNC().send(msg);
                     break;
                 }
                 case J: {  //攻击（发射子弹）
+                    try{
+                        Render.recordFile.seek(Render.recordFile.length());  //移动到文件结尾
+                        Render.recordFile.writeBytes(creature.getName() + " shoot\n");  //写入数据
+                    }catch(IOException e1){
+                        e1.printStackTrace();
+                    }
                     List<Integer> res = Game.shoot(creature, creature.getBullet()); 
                     pc.getRender().drawBullet(creature, creature.getBullet(), res.get(0), res.get(1), res.get(2), res.get(3), res.get(4));
 
@@ -83,6 +89,12 @@ public class BattlefieldGrid {
                     break;
                 } 
                 case K: {  //攻击（发射子弹）
+                    try{
+                        Render.recordFile.seek(Render.recordFile.length());  //移动到文件结尾
+                    Render.recordFile.writeBytes(creature.getName() + " shoot\n");  //写入数据
+                    }catch(IOException e2){
+                        e2.printStackTrace();
+                    }
                     List<Integer> res = Game.shoot(creature, creature.getBullet()); 
                     pc.getRender().drawBullet(creature, creature.getBullet(), res.get(0), res.get(1), res.get(2), res.get(3), res.get(4));
 
@@ -140,7 +152,45 @@ public class BattlefieldGrid {
         button.setTooltip(tp);
     }
 
-    public void move(int dir){
+    public void moveWithRecord(int dir){
+        try{
+            Render.recordFile.seek(Render.recordFile.length());  //移动到文件结尾
+            switch(dir){
+                case 1: {
+                    if(creature.getPosY()>1 && !Game.existCreature(creature.getPosX(), creature.getPosY()-1)){
+                        creature.setPosY(creature.getPosY()-1);
+                        Render.recordFile.writeBytes(creature.getName() + " move 1\n");  //写入数据
+                    }
+                    break;
+                }
+                case 2: {
+                    if(creature.getPosY()<10 && !Game.existCreature(creature.getPosX(), creature.getPosY()+1)){
+                        creature.setPosY(creature.getPosY()+1);
+                        Render.recordFile.writeBytes(creature.getName() + " move 2\n");  //写入数据
+                    }
+                    break;
+                }
+                case 3: {
+                    if(creature.getPosX()>1 && !Game.existCreature(creature.getPosX()-1, creature.getPosY())){
+                        creature.setPosX(creature.getPosX()-1);
+                        Render.recordFile.writeBytes(creature.getName() + " move 3\n");  //写入数据
+                    }
+                    break;
+                }
+                case 4: {
+                    if(creature.getPosX()<19 && !Game.existCreature(creature.getPosX()+1, creature.getPosY())){
+                        creature.setPosX(creature.getPosX()+1);
+                        Render.recordFile.writeBytes(creature.getName() + " move 4\n");  //写入数据
+                    }
+                    break;
+                }
+            }
+        }catch(IOException e){
+            e.printStackTrace();
+        }   
+    }
+
+    public void moveWithoutRecord(int dir){
         switch(dir){
             case 1: {
                 if(creature.getPosY()>1 && !Game.existCreature(creature.getPosX(), creature.getPosY()-1)){

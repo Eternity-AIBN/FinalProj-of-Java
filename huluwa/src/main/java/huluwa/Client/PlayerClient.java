@@ -1,10 +1,5 @@
 package huluwa.Client;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.List;
-
 import huluwa.Game;
 import huluwa.Render;
 import javafx.application.Application;

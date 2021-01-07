@@ -130,15 +130,15 @@ public class NetClient {
                     msg.parse(dis);
                     break;
                 case Msg.SHOOT_MSG:
-                    msg = new ShootMsg(pc);
+                    //msg = new ShootMsg(pc);
                     msg.parse(dis);
                     break;
                 case Msg.DEAD_MSG:
-                    msg = new DeadMsg(pc);
+                    //msg = new DeadMsg(pc);
                     msg.parse(dis);
                     break;
                 case Msg.GAME_OVER_MSG:
-                    msg = new GameOverMsg(pc);
+                    //msg = new GameOverMsg(pc);
                     msg.parse(dis);
                     break;
             }

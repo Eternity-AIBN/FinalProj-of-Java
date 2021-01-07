@@ -1,5 +1,16 @@
 package huluwa;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import huluwa.Bullet.Bullet;
 import huluwa.Creature.Creature;
 
@@ -28,6 +39,8 @@ import javafx.geometry.Pos;
 public class Render extends Application {
     Group root;
     Label label;
+    static RandomAccessFile recordFile;
+    File file;
     private Game game;
     // variable for storing actual frame
     public Render(Game game){
@@ -76,8 +89,27 @@ public class Render extends Application {
         MenuItem replayMenuItem = new MenuItem("Replay");
         MenuItem exitMenuItem = new MenuItem("Exit");
         fileMenu.getItems().addAll(startMenuItem, replayMenuItem, exitMenuItem);
-        startMenuItem.setOnAction(actionEvent -> {game.init(root); label.setText("");});
-        replayMenuItem.setOnAction(actionEvent -> Platform.exit());
+        //startMenuItem.setOnAction(actionEvent -> {game.init(root); label.setText("");});
+        startMenuItem.setOnAction(actionEvent -> {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");// 设置日期格式
+            String fileName = df.format(new Date()); // 获取当前系统时间
+            try {
+                recordFile = new RandomAccessFile(".\\record\\" + fileName + ".txt", "rw");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            game.init(root);
+            label.setText("");
+            System.out.println(Thread.currentThread().getName());
+        });
+        //replayMenuItem.setOnAction(actionEvent -> Platform.exit());
+        replayMenuItem.setOnAction(actionEvent -> {
+            game.init(root);
+            label.setText("");
+            FileChooser filechooser = new FileChooser();
+            file = filechooser.showOpenDialog(primaryStage);
+            replayThread.run();
+        });
         exitMenuItem.setOnAction(actionEvent -> Platform.exit());
 
         menuBar.getMenus().addAll(fileMenu);
@@ -132,4 +164,76 @@ public class Render extends Application {
             label.setText("蛇精获胜！！！");
         }
     }
+
+    private Thread replayThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                BufferedReader br;
+                br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+                try {
+                    String data = null;
+                    while ((data = br.readLine()) != null) {
+                        String name, behave;
+                        String[] tmp = data.split(" ");
+                        name = tmp[0];
+                        behave = tmp[1];
+                        System.out.println(data);
+                        Platform.runLater(()->{
+                            if (behave.equals("move")) {
+                                int dir = Integer.parseInt(tmp[2]);
+                                boolean flag = false;
+                                for (int i = 0; i < game.goodMan.size(); ++i) {
+                                    if (game.goodMan.get(i).getName() == name) {
+                                        flag = true;
+                                        game.goodManGrid.get(i).moveWithoutRecord(dir);
+                                        game.goodManGrid.get(i).update();
+                                        System.out.println("move successfully");
+                                        break;
+                                    }
+                                }
+                                if (!flag) {
+                                    for (int i = 0; i < game.badMan.size(); ++i) {
+                                        if (game.badMan.get(i).getName() == name) {
+                                            game.badManGrid.get(i).moveWithoutRecord(dir);
+                                            game.badManGrid.get(i).update();
+                                            break;
+                                        }
+                                    }
+                                }
+                            } else if (behave.equals("shoot")) {
+                                boolean flag = false;
+                                for (int i = 0; i < game.goodMan.size(); ++i) {
+                                    if (game.goodMan.get(i).getName() == name) {
+                                        flag = true;
+                                        Game.shoot(game.goodMan.get(i), game.goodMan.get(i).getBullet());
+                                        System.out.println("shoot successfully");
+                                        break;
+                                    }
+                                }
+                                if (!flag) {
+                                    for (int i = 0; i < game.badMan.size(); ++i) {
+                                        if (game.badMan.get(i).getName() == name) {
+                                            Game.shoot(game.badMan.get(i), game.badMan.get(i).getBullet());
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                        try {
+                            Thread.sleep(500);
+                        }catch(InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e1) {
+                e1.printStackTrace();
+            }
+		}
+    });
 }

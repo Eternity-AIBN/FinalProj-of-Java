@@ -24,7 +24,7 @@ public class PlayerServer {
     public static void main(String[] args) {
         PlayerServer ps = new PlayerServer();
         ps.start();
-        Render.main(args);
+        //Render.main(args);
     }
 
     public void start(){
@@ -33,7 +33,7 @@ public class PlayerServer {
         ServerSocket ss = null;
         try{
             ss = new ServerSocket(TCP_PORT); //在TCP欢迎套接字上监听客户端连接
-            System.out.println("TankServer has started...");
+            System.out.println("PlayerServer has started...");
         } catch (IOException e) {
             e.printStackTrace();
         }
