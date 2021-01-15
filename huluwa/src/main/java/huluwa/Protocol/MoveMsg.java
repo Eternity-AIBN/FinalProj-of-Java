@@ -58,18 +58,18 @@ public class MoveMsg implements Msg{
             if(good){
                 for(int i=0; i<pc.getGame().goodManGrid.size(); ++i){
                     if(pc.getGame().goodManGrid.get(i).creature.getName()==name){
-                        pc.getGame().goodManGrid.get(i).move(dir);
+                        pc.getGame().goodManGrid.get(i).moveWithRecord(dir);
                         pc.getGame().goodManGrid.get(i).update();
-                        pc.getGame().staticGoodManGrid.get(i).move(dir);
+                        pc.getGame().staticGoodManGrid.get(i).moveWithRecord(dir);
                         break;
                     }
                 }
             }else{
                 for(int i=0; i<pc.getGame().badManGrid.size(); ++i){
                     if(pc.getGame().badManGrid.get(i).creature.getName()==name){
-                        pc.getGame().badManGrid.get(i).move(dir);
+                        pc.getGame().badManGrid.get(i).moveWithRecord(dir);
                         pc.getGame().badManGrid.get(i).update();
-                        pc.getGame().staticBadManGrid.get(i).move(dir);
+                        pc.getGame().staticBadManGrid.get(i).moveWithRecord(dir);
                         break;
                     }
                 }
